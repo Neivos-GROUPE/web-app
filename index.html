@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEIVOS GROUPE - Solutions IA & Digitales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0D1117;
+            --bg-card: #161B22;
+            --text-light: #E6EDF3;
+            --text-muted: #8B949E;
+            --accent-blue: #388BFD;
+            --accent-purple: #A371F7;
+            --border-color: #30363D;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        #ai-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .glass-header {
+            background-color: rgba(13, 17, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-link.active {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+        
+        .lang-switcher button.active {
+            color: var(--accent-blue);
+        }
+
+        .hero-gradient-text {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .service-tab.active {
+            background-color: var(--accent-blue);
+            color: var(--text-light);
+        }
+
+        .card-tech {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-tech:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(56, 139, 253, 0.1);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .audio-player button {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .audio-player button:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin: 0 1rem;
+        }
+        .form-input {
+            background-color: #0D1117;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+        .submit-btn {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            transition: opacity 0.3s ease;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+        .idea-generator-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+        .idea-generator-btn:hover {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+        .idea-suggestion {
+            cursor: pointer;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .idea-suggestion:hover {
+            border-color: var(--accent-blue);
+            background-color: var(--bg-card);
+        }
+        /* Typing animation */
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2rem;
+            background-color: var(--accent-blue);
+            animation: blink 0.7s infinite;
+            margin-left: 4px;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <canvas id="ai-background"></canvas>
+
+    <!-- Header -->
+    <header id="header" class="glass-header sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="flex items-center space-x-2">
+                <svg class="h-10 w-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:var(--accent-blue);stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:var(--accent-purple);stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100ZM50 88C70.9868 88 88 70.9868 88 50C88 29.0132 70.9868 12 50 12C29.0132 12 12 29.0132 12 50C12 70.9868 29.0132 88 50 88Z" fill="url(#logoGradient)" fill-opacity="0.4"/>
+                    <circle cx="50" cy="50" r="4" fill="url(#logoGradient)"/>
+                    <circle cx="25" cy="35" r="3" fill="url(#logoGradient)"/>
+                    <circle cx="30" cy="20" r="2" fill="url(#logoGradient)"/>
+                    <circle cx="70" cy="80" r="2" fill="url(#logoGradient)"/>
+                    <circle cx="80" cy="65" r="3" fill="url(#logoGradient)"/>
+                    <circle cx="20" cy="60" r="2.5" fill="url(#logoGradient)"/>
+                </svg>
+                <span class="text-xl font-bold text-white">NEIVOS GROUPE</span>
+            </a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#about" class="nav-link text-var(--text-muted) hover:text-var(--accent-blue) transition-colors" data-translate="nav_about">À Propos</a>
+                <a href="#services" class="nav-link text-var(--text-muted) hover:text-var(--accent-blue) transition-colors" data-translate="nav_services">Services</a>
+                <a href="#expertise" class="nav-link text-var(--text-muted) hover:text-var(--accent-blue) transition-colors" data-translate="nav_expertise">Technologies</a>
+                <a href="#ai-solutions" class="nav-link text-var(--text-muted) hover:text-var(--accent-blue) transition-colors" data-translate="nav_solutions">Solutions IA</a>
+                <a href="#audio-article" class="nav-link text-var(--text-muted) hover:text-var(--accent-blue) transition-colors" data-translate="nav_audio">Audio Article</a>
+                <div class="lang-switcher flex items-center space-x-2 text-var(--text-muted) font-semibold">
+                    <button id="site-lang-fr" class="active">FR</button>
+                    <span>/</span>
+                    <button id="site-lang-en">EN</button>
+                </div>
+            </nav>
+            <a href="#contact" class="hidden md:inline-block bg-var(--accent-blue) text-white px-5 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity" data-translate="nav_contact">Contact</a>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-var(--text-muted)">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4">
+            <a href="#about" class="block py-2 nav-link" data-translate="nav_about_mobile">À Propos</a>
+            <a href="#services" class="block py-2 nav-link" data-translate="nav_services_mobile">Services</a>
+            <a href="#expertise" class="block py-2 nav-link" data-translate="nav_expertise_mobile">Technologies</a>
+            <a href="#ai-solutions" class="block py-2 nav-link" data-translate="nav_solutions_mobile">Solutions IA</a>
+            <a href="#audio-article" class="block py-2 nav-link" data-translate="nav_audio_mobile">Audio Article</a>
+            <a href="#contact" class="block mt-2 text-center bg-var(--accent-blue) text-white px-4 py-2 rounded-lg" data-translate="nav_contact_mobile">Contact</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex items-center">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight" data-translate="hero_title">
+                    Façonner le Futur avec l'
+                    <span class="hero-gradient-text">Intelligence Artificielle</span>
+                </h1>
+                <p class="mt-6 text-lg text-var(--text-muted) max-w-3xl mx-auto min-h-[56px]">
+                    <span id="hero-subtitle-typed"></span><span class="typing-cursor"></span>
+                </p>
+                <a href="#services" class="mt-10 inline-block bg-var(--accent-blue) text-white px-8 py-4 rounded-lg text-lg font-semibold hover:opacity-90 transition-transform hover:scale-105" data-translate="hero_cta">Découvrez notre savoir-faire</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 md:py-32 scroll-reveal">
+            <div class="container mx-auto px-6 max-w-4xl text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4" data-translate="about_title">Au cœur de l'innovation</h2>
+                <p class="text-lg text-var(--text-muted) leading-relaxed" data-translate="about_text">
+                    NEIVOS GROUPE est le pôle stratégique qui allie expertise technique et approche humaine pour garantir le succès de vos projets les plus ambitieux. Nous sommes passionnés par la résolution de problèmes complexes et la création de valeur durable pour nos partenaires en transformant les idées en solutions technologiques robustes et évolutives.
+                </p>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-20 md:py-32 scroll-reveal">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate="services_title">Nos Activités Clés</h2>
+                    <p class="mt-4 text-lg text-var(--text-muted)" data-translate="services_subtitle">Des services agiles et sur mesure pour accélérer votre croissance.</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-12 items-center">
+                    <div class="w-full lg:w-1/3">
+                        <div class="flex flex-col space-y-4">
+                            <button data-target="service-1" class="service-tab text-left p-4 rounded-lg border border-var(--border-color) transition-colors active" data-translate="service_tab_1">Outsourcing Personnalisé</button>
+                            <button data-target="service-2" class="service-tab text-left p-4 rounded-lg border border-var(--border-color) transition-colors" data-translate="service_tab_2">Formation IT & Pédagogie</button>
+                            <button data-target="service-3" class="service-tab text-left p-4 rounded-lg border border-var(--border-color) transition-colors" data-translate="service_tab_3">Conseil IA & Data</button>
+                            <button data-target="service-4" class="service-tab text-left p-4 rounded-lg border border-var(--border-color) transition-colors" data-translate="service_tab_4">Connexion de Talents</button>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-2/3">
+                        <div id="service-content" class="p-8 rounded-lg min-h-[200px] flex items-center" style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
+                            <div id="service-1" class="service-pane">
+                                <h3 class="text-2xl font-bold text-var(--accent-blue) mb-3" data-translate="service_pane_1_title">Outsourcing Stratégique</h3>
+                                <p class="text-var(--text-muted)" data-translate="service_pane_1_text">Nous intégrons des experts certifiés au sein de vos équipes pour piloter vos projets, garantir la qualité et accélérer vos développements avec une flexibilité maximale.</p>
+                            </div>
+                            <div id="service-2" class="service-pane hidden">
+                                <h3 class="text-2xl font-bold text-var(--accent-blue) mb-3" data-translate="service_pane_2_title">Formation IT & Ingénierie Pédagogique</h3>
+                                <p class="text-var(--text-muted)" data-translate="service_pane_2_text">Nous construisons des parcours de formation sur mesure et déployons des formateurs de haut niveau pour une montée en compétence rapide et durable de vos équipes.</p>
+                            </div>
+                            <div id="service-3" class="service-pane hidden">
+                                <h3 class="text-2xl font-bold text-var(--accent-blue) mb-3" data-translate="service_pane_3_title">Conseil en IA et Data Science</h3>
+                                <p class="text-var(--text-muted)" data-translate="service_pane_3_text">De l'audit à la production, nous vous guidons dans l'implémentation de solutions IA (NLP, Vision, LLMs) pour transformer vos données en avantage compétitif tangible.</p>
+                            </div>
+                            <div id="service-4" class="service-pane hidden">
+                                <h3 class="text-2xl font-bold text-var(--accent-blue) mb-3" data-translate="service_pane_4_title">Mise en Relation de Talents</h3>
+                                <p class="text-var(--text-muted)" data-translate="service_pane_4_text">Nous identifions et connectons les consultants IT les plus qualifiés avec des projets porteurs de sens, assurant une adéquation parfaite entre compétences et besoins.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expertise Section -->
+        <section id="expertise" class="py-20 md:py-32 scroll-reveal">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate="tech_title">Technologies & Outils</h2>
+                    <p class="mt-4 text-lg text-var(--text-muted)" data-translate="tech_subtitle">Notre arsenal technologique pour l'innovation.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="card-tech p-8 rounded-xl">
+                        <h3 class="text-xl font-bold hero-gradient-text">LLM & NLU</h3>
+                        <p class="mt-4 text-var(--text-muted)" data-translate="tech_card_1_text">Nous exploitons la puissance des grands modèles de langage (LLM) et de la compréhension du langage naturel (NLU) pour bâtir des systèmes d'analyse sémantique, de génération de contenu et des agents conversationnels qui comprennent l'intention de l'utilisateur.</p>
+                    </div>
+                    <div class="card-tech p-8 rounded-xl">
+                        <h3 class="text-xl font-bold hero-gradient-text">Computer Vision</h3>
+                        <p class="mt-4 text-var(--text-muted)" data-translate="tech_card_vision_text">Nous développons des solutions d'analyse d'images et de vidéos pour la détection d'objets, la reconnaissance faciale, le contrôle qualité et l'automatisation de processus visuels, en utilisant des modèles comme YOLO ou ViT.</p>
+                    </div>
+                    <div class="card-tech p-8 rounded-xl">
+                        <h3 class="text-xl font-bold hero-gradient-text">STT / TTS</h3>
+                        <p class="mt-4 text-var(--text-muted)" data-translate="tech_card_2_text">Nous transformons la voix en données et vice-versa. Nos solutions de Speech-to-Text (STT) et Text-to-Speech (TTS) permettent de créer des interfaces vocales interactives, des systèmes de dictée et des applications d'accessibilité de pointe.</p>
+                    </div>
+                    <div class="card-tech p-8 rounded-xl flex flex-col justify-center items-center text-center">
+                        <!-- Logo Hugging Face SVG -->
+                        <svg class="w-16 h-16 mb-4 text-yellow-400" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                            <title>Hugging Face</title>
+                            <path d="M22.004 14.239c.315-.224.59-.51.795-.858.214-.357.33-.766.33-1.21s-.116-.853-.33-1.21a2.22 2.22 0 0 0-.795-.858l-2.295-1.636a1.352 1.352 0 0 1-.54-.99V5.049c0-.462-.135-.89-.39-1.248-.255-.358-.6-.632-.99-.795L15.52.711a2.22 2.22 0 0 0-1.21-.33 2.22 2.22 0 0 0-1.21.33L10.704 2.006a1.352 1.352 0 0 1-.99.54H7.29a2.22 2.22 0 0 0-1.21.33c-.357.214-.643.5-.858.795s-.33.66-.33 1.21v2.424c0 .403-.18.78-.479.99L1.996 10.56a2.22 2.22 0 0 0-.795.858c-.214.357-.33.766-.33 1.21s.116.853.33 1.21c.214.348.49.634.795.858l2.295 1.636c.29.21.48.587.48.99v2.424c0 .462.135.89-.39 1.248.255-.358.6.632-.99-.795l2.424 1.295c.357.214.766.33 1.21.33s.853-.116 1.21-.33l2.396-1.295c.39-.21.735-.484.99-.795.255-.358.39-.786.39-1.248v-2.424c0-.403.18-.78.48-.99l2.294-1.636zM12 17.76a5.76 5.76 0 1 1 0-11.52 5.76 5.76 0 0 1 0 11.52zm-3.48-5.76a1.44 1.44 0 1 1 2.88 0 1.44 1.44 0 0 1-2.88 0zm6.96 0a1.44 1.44 0 1 1 2.88 0 1.44 1.44 0 0 1-2.88 0z"/>
+                        </svg>
+                        <h3 class="text-xl font-bold" data-translate="tech_card_3_title">Nos Modèles</h3>
+                        <a href="https://huggingface.co/mohamed1ai" target="_blank" rel="noopener noreferrer" class="mt-2 text-var(--accent-blue) hover:underline" data-translate="tech_card_3_link">Explorer sur Hugging Face</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Solutions Section -->
+        <section id="ai-solutions" class="py-20 md:py-32 scroll-reveal">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate="solutions_title">Nos Solutions IA</h2>
+                    <p class="mt-4 text-lg text-var(--text-muted)" data-translate="solutions_subtitle">Des applications concrètes pour transformer votre métier.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card-tech p-8 rounded-xl">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-8 h-8 mr-4 text-var(--accent-blue)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <h3 class="text-xl font-bold hero-gradient-text" data-translate="solution_card_1_title">Chatbots & Callbots</h3>
+                        </div>
+                        <p class="text-var(--text-muted)" data-translate="solution_card_1_text">Nous concevons des agents conversationnels intelligents (texte et voix) pour automatiser le service client, qualifier des prospects ou fournir un support technique 24/7, avec une compréhension fine des dialogues.</p>
+                    </div>
+                    <div class="card-tech p-8 rounded-xl">
+                        <div class="flex items-center mb-4">
+                             <svg class="w-8 h-8 mr-4 text-var(--accent-blue)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            <h3 class="text-xl font-bold hero-gradient-text" data-translate="solution_card_2_title">LLM Fine-Tuning & RAG</h3>
+                        </div>
+                        <p class="text-var(--text-muted)" data-translate="solution_card_2_text">Nous adaptons des modèles de langage (LLMs) à vos données propriétaires. Grâce au fine-tuning (LoRA, QLoRA) et au RAG (Retrieval-Augmented Generation), nous créons des IA expertes de votre domaine métier.</p>
+                    </div>
+                    <div class="card-tech p-8 rounded-xl">
+                         <div class="flex items-center mb-4">
+                            <svg class="w-8 h-8 mr-4 text-var(--accent-blue)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                            <h3 class="text-xl font-bold hero-gradient-text" data-translate="solution_card_3_title">Création d'Agents IA</h3>
+                        </div>
+                        <p class="text-var(--text-muted)" data-translate="solution_card_3_text">Via des frameworks comme LangChain, LlamaIndex et des plateformes low-code (Flowise, n8n), nous orchestrons des agents IA autonomes capables d'exécuter des tâches complexes, d'interagir avec des APIs et d'automatiser vos workflows.</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 card-tech p-8 rounded-xl">
+                    <h3 class="text-2xl font-bold text-center mb-8" data-translate="flow_title">Extraction de Connaissances depuis vos Documents</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-center text-center">
+                        <div class="flex flex-col items-center">
+                            <svg class="w-16 h-16 text-var(--accent-purple)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <span class="mt-2 font-semibold" data-translate="flow_step_1">Docs (PDF, XLS)</span>
+                        </div>
+                        <div class="flow-arrow transform rotate-90 md:rotate-0">&rarr;</div>
+                        <div class="flex flex-col items-center">
+                            <svg class="w-16 h-16 text-var(--accent-blue)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                            <span class="mt-2 font-semibold" data-translate="flow_step_2">Analyse IA (RAG)</span>
+                        </div>
+                        <div class="flow-arrow transform rotate-90 md:rotate-0">&rarr;</div>
+                        <div class="flex flex-col items-center">
+                            <svg class="w-16 h-16 text-var(--accent-purple)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                            <span class="mt-2 font-semibold" data-translate="flow_step_3">Base de Connaissances</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audio Article Section -->
+        <section id="audio-article" class="py-20 md:py-32 scroll-reveal">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate="audio_title">Article Audio : L'IA en Action</h2>
+                    <p class="mt-4 text-lg text-var(--text-muted)" data-translate="audio_subtitle">Écoutez comment l'IA redéfinit notre monde. Cliquez sur Play.</p>
+                </div>
+                <div class="p-8 rounded-lg card-tech">
+                    <div id="article-text" class="text-var(--text-muted) leading-relaxed" data-translate="audio_text_content">
+                        L'intelligence artificielle n'est plus de la science-fiction ; elle est une réalité qui façonne activement notre quotidien et l'avenir des entreprises. Des modèles de langage capables de rédiger des textes complexes aux algorithmes de vision qui détectent des anomalies avec une précision surhumaine, l'IA est le moteur d'une nouvelle révolution industrielle. Chez NEIVOS GROUPE, nous ne nous contentons pas de suivre cette tendance : nous la créons, en développant des solutions qui rendent cette technologie accessible, éthique et performante pour nos clients.
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-var(--border-color) flex items-center justify-between">
+                        <div class="flex items-center space-x-2 audio-player">
+                            <button id="play-btn" title="Play"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg></button>
+                            <button id="pause-btn" title="Pause"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 4.5a.75.75 0 00-.75.75v10.5a.75.75 0 001.5 0V5.25A.75.75 0 005.75 4.5zM14.25 4.5a.75.75 0 00-.75.75v10.5a.75.75 0 001.5 0V5.25a.75.75 0 00-.75-.75z"></path></svg></button>
+                            <button id="stop-btn" title="Stop"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 6.25A1.25 1.25 0 003.75 7.5v5A1.25 1.25 0 005 13.75h10A1.25 1.25 0 0016.25 12.5v-5A1.25 1.25 0 0015 6.25H5z"></path></svg></button>
+                            <span id="audio-status" class="text-sm text-var(--text-muted) ml-4" data-translate="audio_status">Prêt à jouer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Form Section -->
+        <section id="contact" class="py-20 md:py-32 scroll-reveal">
+            <div class="container mx-auto px-6 max-w-2xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold" data-translate="contact_form_title">Contactez-nous</h2>
+                </div>
+                <div class="card-tech p-8 rounded-xl">
+                    <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Formulaire soumis !');">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="full-name" class="block text-sm font-medium text-var(--text-muted)" data-translate="form_label_name">Nom complet</label>
+                                <input type="text" name="full-name" id="full-name" class="mt-1 form-input" placeholder="Jean Dupont">
+                            </div>
+                             <div>
+                                <label for="email" class="block text-sm font-medium text-var(--text-muted)" data-translate="form_label_email">Adresse e-mail</label>
+                                <input type="email" name="email" id="email" class="mt-1 form-input" placeholder="vous@exemple.com">
+                            </div>
+                             <div>
+                                <label for="company" class="block text-sm font-medium text-var(--text-muted)" data-translate="form_label_company">Votre entreprise</label>
+                                <input type="text" name="company" id="company" class="mt-1 form-input" placeholder="Nom de l'entreprise">
+                            </div>
+                            <div>
+                                 <div class="flex justify-between items-center">
+                                    <label for="message" class="block text-sm font-medium text-var(--text-muted)" data-translate="form_label_message">Message</label>
+                                    <button type="button" id="idea-generator-btn" class="idea-generator-btn">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                                        <span data-translate="form_idea_button">Générer des idées</span>
+                                    </button>
+                                 </div>
+                                 <textarea name="message" id="message" rows="4" class="mt-1 form-input" data-translate="form_placeholder_message" placeholder="Décrivez-nous votre projet ou votre besoin..."></textarea>
+                            </div>
+                            <!-- AI Idea Suggestions -->
+                            <div id="idea-suggestions-container" class="space-y-2"></div>
+
+                            <div>
+                                <button type="submit" class="submit-btn" data-translate="form_submit_button">Envoyer le message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-var(--border-color) mt-8">
+        <div class="container mx-auto px-6 py-16 text-center">
+             <a href="#hero" class="flex items-center justify-center space-x-2 mx-auto mb-8 w-auto">
+                <svg class="h-12 w-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:var(--accent-blue);stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:var(--accent-purple);stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100ZM50 88C70.9868 88 88 70.9868 88 50C88 29.0132 70.9868 12 50 12C29.0132 12 12 29.0132 12 50C12 70.9868 29.0132 88 50 88Z" fill="url(#logoGradientFooter)" fill-opacity="0.4"/>
+                    <circle cx="50" cy="50" r="4" fill="url(#logoGradientFooter)"/>
+                    <circle cx="25" cy="35" r="3" fill="url(#logoGradientFooter)"/>
+                    <circle cx="30" cy="20" r="2" fill="url(#logoGradientFooter)"/>
+                    <circle cx="70" cy="80" r="2" fill="url(#logoGradientFooter)"/>
+                    <circle cx="80" cy="65" r="3" fill="url(#logoGradientFooter)"/>
+                    <circle cx="20" cy="60" r="2.5" fill="url(#logoGradientFooter)"/>
+                </svg>
+                <span class="text-2xl font-bold text-white">NEIVOS GROUPE</span>
+            </a>
+            <h2 class="text-2xl font-bold" data-translate="footer_title">Prêt à innover avec nous ?</h2>
+            <p class="text-var(--text-muted) mt-2 mb-6" data-translate="footer_subtitle">Discutons de votre prochain projet.</p>
+            <div class="text-lg text-var(--text-light) space-y-2">
+                <p><a href="mailto:Contact@neivos.fr" class="hover:text-var(--accent-blue)">Contact@neivos.fr</a></p>
+            </div>
+            <div class="mt-12 pt-8 border-t border-var(--border-color)">
+                <p class="text-var(--text-muted) text-sm" data-translate="footer_copyright">&copy; 2025 NEIVOS GROUPE. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- CONTENT MANAGEMENT ---
+            const content = {
+                fr: {
+                    nav_about: "À Propos",
+                    nav_services: "Services",
+                    nav_expertise: "Technologies",
+                    nav_solutions: "Solutions IA",
+                    nav_audio: "Audio Article",
+                    nav_contact: "Contact",
+                    nav_about_mobile: "À Propos",
+                    nav_services_mobile: "Services",
+                    nav_expertise_mobile: "Technologies",
+                    nav_solutions_mobile: "Solutions IA",
+                    nav_audio_mobile: "Audio Article",
+                    nav_contact_mobile: "Contact",
+                    hero_title: "Façonner le Futur avec l'<span class='hero-gradient-text'>Intelligence Artificielle</span>",
+                    hero_subtitle_lines: [
+                        "Nous transformons vos défis en opportunités.",
+                        "Solutions sur mesure en outsourcing, formation IT et IA.",
+                        "Votre partenaire stratégique pour l'innovation."
+                    ],
+                    hero_cta: "Découvrez notre savoir-faire",
+                    about_title: "Au cœur de l'innovation",
+                    about_text: "NEIVOS GROUPE est le pôle stratégique qui allie expertise technique et approche humaine pour garantir le succès de vos projets les plus ambitieux. Nous sommes passionnés par la résolution de problèmes complexes et la création de valeur durable pour nos partenaires en transformant les idées en solutions technologiques robustes et évolutives.",
+                    services_title: "Nos Activités Clés",
+                    services_subtitle: "Des services agiles et sur mesure pour accélérer votre croissance.",
+                    service_tab_1: "Outsourcing Personnalisé",
+                    service_tab_2: "Formation IT & Pédagogie",
+                    service_tab_3: "Conseil IA & Data",
+                    service_tab_4: "Connexion de Talents",
+                    service_pane_1_title: "Outsourcing Stratégique",
+                    service_pane_1_text: "Nous intégrons des experts certifiés au sein de vos équipes pour piloter vos projets, garantir la qualité et accélérer vos développements avec une flexibilité maximale.",
+                    service_pane_2_title: "Formation IT & Ingénierie Pédagogique",
+                    service_pane_2_text: "Nous construisons des parcours de formation sur mesure et déployons des formateurs de haut niveau pour une montée en compétence rapide et durable de vos équipes.",
+                    service_pane_3_title: "Conseil en IA et Data Science",
+                    service_pane_3_text: "De l'audit à la production, nous vous guidons dans l'implémentation de solutions IA (NLP, Vision, LLMs) pour transformer vos données en avantage compétitif tangible.",
+                    service_pane_4_title: "Mise en Relation de Talents",
+                    service_pane_4_text: "Nous identifions et connectons les consultants IT les plus qualifiés avec des projets porteurs de sens, assurant une adéquation parfaite entre compétences et besoins.",
+                    tech_title: "Technologies & Outils",
+                    tech_subtitle: "Notre arsenal technologique pour l'innovation.",
+                    tech_card_1_text: "Nous exploitons la puissance des grands modèles de langage (LLM) et de la compréhension du langage naturel (NLU) pour bâtir des systèmes d'analyse sémantique, de génération de contenu et des agents conversationnels qui comprennent l'intention de l'utilisateur.",
+                    tech_card_vision_text: "Nous développons des solutions d'analyse d'images et de vidéos pour la détection d'objets, la reconnaissance faciale, le contrôle qualité et l'automatisation de processus visuels, en utilisant des modèles comme YOLO ou ViT.",
+                    tech_card_2_text: "Nous transformons la voix en données et vice-versa. Nos solutions de Speech-to-Text (STT) et Text-to-Speech (TTS) permettent de créer des interfaces vocales interactives, des systèmes de dictée et des applications d'accessibilité de pointe.",
+                    tech_card_3_title: "Nos Modèles",
+                    tech_card_3_link: "Explorer sur Hugging Face",
+                    solutions_title: "Nos Solutions IA",
+                    solutions_subtitle: "Des applications concrètes pour transformer votre métier.",
+                    solution_card_1_title: "Chatbots & Callbots",
+                    solution_card_1_text: "Nous concevons des agents conversationnels intelligents (texte et voix) pour automatiser le service client, qualifier des prospects ou fournir un support technique 24/7, avec une compréhension fine des dialogues.",
+                    solution_card_2_title: "LLM Fine-Tuning & RAG",
+                    solution_card_2_text: "Nous adaptons des modèles de langage (LLMs) à vos données propriétaires. Grâce au fine-tuning (LoRA, QLoRA) et au RAG (Retrieval-Augmented Generation), nous créons des IA expertes de votre domaine métier.",
+                    solution_card_3_title: "Création d'Agents IA",
+                    solution_card_3_text: "Via des frameworks comme LangChain, LlamaIndex et des plateformes low-code (Flowise, n8n), nous orchestrons des agents IA autonomes capables d'exécuter des tâches complexes, d'interagir avec des APIs et d'automatiser vos workflows.",
+                    flow_title: "Extraction de Connaissances depuis vos Documents",
+                    flow_step_1: "Docs (PDF, XLS)",
+                    flow_step_2: "Analyse IA (RAG)",
+                    flow_step_3: "Base de Connaissances",
+                    audio_title: "Article Audio : L'IA en Action",
+                    audio_subtitle: "Écoutez comment l'IA redéfinit notre monde. Cliquez sur Play.",
+                    audio_text_content: "L'intelligence artificielle n'est plus de la science-fiction ; elle est une réalité qui façonne activement notre quotidien et l'avenir des entreprises. Des modèles de langage capables de rédiger des textes complexes aux algorithmes de vision qui détectent des anomalies avec une précision surhumaine, l'IA est le moteur d'une nouvelle révolution industrielle. Chez NEIVOS GROUPE, nous ne nous contentons pas de suivre cette tendance : nous la créons, en développant des solutions qui rendent cette technologie accessible, éthique et performante pour nos clients.",
+                    audio_status: "Prêt à jouer",
+                    audio_status_playing: "Lecture en cours...",
+                    audio_status_paused: "En pause",
+                    contact_form_title: "Contactez-nous",
+                    form_label_name: "Nom complet",
+                    form_label_email: "Adresse e-mail",
+                    form_label_company: "Votre entreprise",
+                    form_label_message: "Message",
+                    form_placeholder_message: "Décrivez-nous votre projet ou votre besoin...",
+                    form_submit_button: "Envoyer le message",
+                    form_idea_button: "Générer des idées",
+                    form_idea_loading: "Génération...",
+                    form_idea_error: "Erreur, réessayez.",
+                    footer_title: "Prêt à innover avec nous ?",
+                    footer_subtitle: "Discutons de votre prochain projet.",
+                    footer_copyright: "&copy; 2025 NEIVOS GROUPE. Tous droits réservés."
+                },
+                en: {
+                    nav_about: "About",
+                    nav_services: "Services",
+                    nav_expertise: "Technologies",
+                    nav_solutions: "AI Solutions",
+                    nav_audio: "Audio Article",
+                    nav_contact: "Contact",
+                    nav_about_mobile: "About",
+                    nav_services_mobile: "Services",
+                    nav_expertise_mobile: "Technologies",
+                    nav_solutions_mobile: "AI Solutions",
+                    nav_audio_mobile: "Audio Article",
+                    nav_contact_mobile: "Contact",
+                    hero_title: "Shaping the Future with <span class='hero-gradient-text'>Artificial Intelligence</span>",
+                    hero_subtitle_lines: [
+                        "We turn your challenges into opportunities.",
+                        "Custom solutions in outsourcing, IT training, and AI.",
+                        "Your strategic partner for innovation."
+                    ],
+                    hero_cta: "Discover Our Expertise",
+                    about_title: "At the Heart of Innovation",
+                    about_text: "NEIVOS GROUPE is the strategic hub that combines technical expertise with a human approach to ensure the success of your most ambitious projects. We are passionate about solving complex problems and creating sustainable value for our partners by turning ideas into robust and scalable technological solutions.",
+                    services_title: "Our Key Activities",
+                    services_subtitle: "Agile and custom services to accelerate your growth.",
+                    service_tab_1: "Custom Outsourcing",
+                    service_tab_2: "IT Training & Pedagogy",
+                    service_tab_3: "AI & Data Consulting",
+                    service_tab_4: "Talent Connection",
+                    service_pane_1_title: "Strategic Outsourcing",
+                    service_pane_1_text: "We integrate certified experts into your teams to manage your projects, ensure quality, and accelerate your developments with maximum flexibility.",
+                    service_pane_2_title: "IT Training & Educational Engineering",
+                    service_pane_2_text: "We build custom training paths and deploy top-tier trainers for a rapid and sustainable skill upgrade of your teams.",
+                    service_pane_3_title: "AI and Data Science Consulting",
+                    service_pane_3_text: "From audit to production, we guide you in implementing AI solutions (NLP, Vision, LLMs) to turn your data into a tangible competitive advantage.",
+                    service_pane_4_title: "Talent Connection",
+                    service_pane_4_text: "We identify and connect the most qualified IT consultants with meaningful projects, ensuring a perfect match between skills and needs.",
+                    tech_title: "Technologies & Tools",
+                    tech_subtitle: "Our technological arsenal for innovation.",
+                    tech_card_1_text: "We harness the power of Large Language Models (LLM) and Natural Language Understanding (NLU) to build semantic analysis systems, content generation tools, and conversational agents that understand user intent.",
+                    tech_card_vision_text: "We develop image and video analysis solutions for object detection, facial recognition, quality control, and visual process automation, using models like YOLO or ViT.",
+                    tech_card_2_text: "We turn voice into data and vice versa. Our Speech-to-Text (STT) and Text-to-Speech (TTS) solutions enable the creation of interactive voice interfaces, dictation systems, and cutting-edge accessibility applications.",
+                    tech_card_3_title: "Our Models",
+                    tech_card_3_link: "Explore on Hugging Face",
+                    solutions_title: "Our AI Solutions",
+                    solutions_subtitle: "Concrete applications to transform your business.",
+                    solution_card_1_title: "Chatbots & Callbots",
+                    solution_card_1_text: "We design intelligent conversational agents (text and voice) to automate customer service, qualify leads, or provide 24/7 technical support, with a fine-grained understanding of dialogue.",
+                    solution_card_2_title: "LLM Fine-Tuning & RAG",
+                    solution_card_2_text: "We adapt Large Language Models (LLMs) to your proprietary data. Using fine-tuning (LoRA, QLoRA) and RAG (Retrieval-Augmented Generation), we create AI experts in your business domain.",
+                    solution_card_3_title: "AI Agent Creation",
+                    solution_card_3_text: "Using frameworks like LangChain, LlamaIndex, and low-code platforms (Flowise, n8n), we orchestrate autonomous AI agents capable of executing complex tasks, interacting with APIs, and automating your workflows.",
+                    flow_title: "Knowledge Extraction from Your Documents",
+                    flow_step_1: "Docs (PDF, XLS)",
+                    flow_step_2: "AI Analysis (RAG)",
+                    flow_step_3: "Knowledge Base",
+                    audio_title: "Audio Article: AI in Action",
+                    audio_subtitle: "Listen to how AI is redefining our world. Click Play.",
+                    audio_text_content: "Artificial intelligence is no longer science fiction; it is a reality that actively shapes our daily lives and the future of business. From language models capable of writing complex texts to vision algorithms that detect anomalies with superhuman precision, AI is the engine of a new industrial revolution. At NEIVOS GROUPE, we don't just follow this trend: we create it, by developing solutions that make this technology accessible, ethical, and efficient for our clients.",
+                    audio_status: "Ready to play",
+                    audio_status_playing: "Playing...",
+                    audio_status_paused: "Paused",
+                    contact_form_title: "Contact Us",
+                    form_label_name: "Full Name",
+                    form_label_email: "Email Address",
+                    form_label_company: "Your Company",
+                    form_label_message: "Message",
+                    form_placeholder_message: "Tell us about your project or needs...",
+                    form_submit_button: "Send Message",
+                    form_idea_button: "Generate ideas",
+                    form_idea_loading: "Generating...",
+                    form_idea_error: "Error, try again.",
+                    footer_title: "Ready to innovate with us?",
+                    footer_subtitle: "Let's discuss your next project.",
+                    footer_copyright: "&copy; 2025 NEIVOS GROUPE. All rights reserved."
+                }
+            };
+
+            const siteLangFrBtn = document.getElementById('site-lang-fr');
+            const siteLangEnBtn = document.getElementById('site-lang-en');
+            let currentLang = 'fr';
+
+            // --- Typing Animation ---
+            const typedTextSpan = document.getElementById("hero-subtitle-typed");
+            let typeInterval;
+            
+            function startTypingAnimation() {
+                const textLines = content[currentLang].hero_subtitle_lines;
+                let textArrayIndex = 0;
+                let charIndex = 0;
+                
+                if (typeInterval) clearInterval(typeInterval);
+
+                function type() {
+                    if (charIndex < textLines[textArrayIndex].length) {
+                        typedTextSpan.textContent += textLines[textArrayIndex].charAt(charIndex);
+                        charIndex++;
+                    } else {
+                        setTimeout(erase, 2000);
+                    }
+                }
+
+                function erase() {
+                    if (charIndex > 0) {
+                        typedTextSpan.textContent = textLines[textArrayIndex].substring(0, charIndex - 1);
+                        charIndex--;
+                    } else {
+                        textArrayIndex++;
+                        if (textArrayIndex >= textLines.length) textArrayIndex = 0;
+                        setTimeout(() => { typeInterval = setInterval(type, 100) }, 500);
+                    }
+                }
+                
+                typeInterval = setInterval(type, 100);
+                const eraseInterval = setInterval(erase, 50);
+
+                // Clear intervals to avoid conflicts
+                clearInterval(typeInterval);
+                clearInterval(eraseInterval);
+
+                // Restart typing
+                function typeAndErase() {
+                    if (charIndex < textLines[textArrayIndex].length) {
+                        typedTextSpan.textContent += textLines[textArrayIndex].charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeAndErase, 100);
+                    } else {
+                        setTimeout(erase, 2000);
+                    }
+                }
+
+                function erase() {
+                    if (charIndex > 0) {
+                        typedTextSpan.textContent = textLines[textArrayIndex].substring(0, charIndex - 1);
+                        charIndex--;
+                        setTimeout(erase, 50);
+                    } else {
+                        textArrayIndex = (textArrayIndex + 1) % textLines.length;
+                        setTimeout(typeAndErase, 500);
+                    }
+                }
+                typeAndErase();
+            }
+
+
+            function setSiteLanguage(lang) {
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                const elements = document.querySelectorAll('[data-translate]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-translate');
+                    if (content[lang][key]) {
+                        if(key.includes('placeholder')) {
+                            el.placeholder = content[lang][key];
+                        } else {
+                            el.innerHTML = content[lang][key];
+                        }
+                    }
+                });
+                siteLangFrBtn.classList.toggle('active', lang === 'fr');
+                siteLangEnBtn.classList.toggle('active', lang === 'en');
+                
+                // Restart typing animation with new language
+                typedTextSpan.textContent = '';
+                startTypingAnimation();
+            }
+
+            siteLangFrBtn.addEventListener('click', () => setSiteLanguage('fr'));
+            siteLangEnBtn.addEventListener('click', () => setSiteLanguage('en'));
+            
+            // --- AI Background Animation ---
+            const canvas = document.getElementById('ai-background');
+            const ctx = canvas.getContext('2d');
+            let animationFrameId;
+
+            function setupCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            setupCanvas();
+
+            let particles = [];
+            let particleCount;
+
+            const mouse = { x: null, y: null };
+
+            window.addEventListener('mousemove', (event) => { mouse.x = event.x; mouse.y = event.y; });
+            window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+            window.addEventListener('resize', () => {
+                setupCanvas();
+                initParticles();
+            });
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = Math.random() * 0.8 - 0.4;
+                    this.speedY = Math.random() * 0.8 - 0.4;
+                    this.color = 'rgba(56, 139, 253, 0.5)';
+                }
+                update() {
+                    if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                    if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                particleCount = Math.floor(canvas.width / 35);
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function connectParticles() {
+                let opacityValue = 1;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a; b < particles.length; b++) {
+                        let distance = Math.sqrt(Math.pow(particles[a].x - particles[b].x, 2) + Math.pow(particles[a].y - particles[b].y, 2));
+                        if (distance < 120) {
+                            opacityValue = 1 - (distance / 120);
+                            ctx.strokeStyle = `rgba(56, 139, 253, ${opacityValue})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                if (mouse.x !== null && mouse.y !== null) {
+                    for (let i = 0; i < particles.length; i++) {
+                        let distance = Math.sqrt(Math.pow(particles[i].x - mouse.x, 2) + Math.pow(particles[i].y - mouse.y, 2));
+                        if (distance < 250) {
+                            opacityValue = 1 - (distance / 250);
+                            ctx.strokeStyle = `rgba(163, 113, 247, ${opacityValue})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let particle of particles) {
+                    particle.update();
+                    particle.draw();
+                }
+                connectParticles();
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            initParticles();
+            animate();
+
+            // --- UI INTERACTIONS ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            
+            const serviceTabs = document.querySelectorAll('.service-tab');
+            const servicePanes = document.querySelectorAll('.service-pane');
+            serviceTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    serviceTabs.forEach(t => t.classList.remove('active'));
+                    servicePanes.forEach(p => p.classList.add('hidden'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.target).classList.remove('hidden');
+                });
+            });
+
+            const sections = document.querySelectorAll('main > section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 70) current = section.getAttribute('id');
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) link.classList.add('active');
+                });
+            });
+            
+            const revealElements = document.querySelectorAll('.scroll-reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            revealElements.forEach(el => observer.observe(el));
+
+            // --- Text-to-Speech (TTS) Logic ---
+            const playBtn = document.getElementById('play-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const audioStatus = document.getElementById('audio-status');
+            
+            if ('speechSynthesis' in window) {
+                let utterance = new SpeechSynthesisUtterance();
+                utterance.onstart = () => audioStatus.innerHTML = content[currentLang].audio_status_playing;
+                utterance.onpause = () => audioStatus.innerHTML = content[currentLang].audio_status_paused;
+                utterance.onresume = () => audioStatus.innerHTML = content[currentLang].audio_status_playing;
+                utterance.onend = () => audioStatus.innerHTML = content[currentLang].audio_status;
+
+                playBtn.addEventListener('click', () => {
+                    if (speechSynthesis.paused) {
+                        speechSynthesis.resume();
+                    } else if (!speechSynthesis.speaking) {
+                        utterance.text = document.getElementById('article-text').textContent;
+                        utterance.lang = currentLang === 'fr' ? 'fr-FR' : 'en-US';
+                        speechSynthesis.speak(utterance);
+                    }
+                });
+                pauseBtn.addEventListener('click', () => { if (speechSynthesis.speaking) speechSynthesis.pause(); });
+                stopBtn.addEventListener('click', () => { speechSynthesis.cancel(); });
+            } else {
+                document.querySelector('.audio-player').innerHTML = `<p class="text-sm text-red-400">Speech synthesis is not supported.</p>`;
+            }
+
+            // --- AI Idea Generator ---
+            const ideaBtn = document.getElementById('idea-generator-btn');
+            const ideaContainer = document.getElementById('idea-suggestions-container');
+            const messageTextarea = document.getElementById('message');
+
+            ideaBtn.addEventListener('click', async () => {
+                const originalButtonText = ideaBtn.querySelector('span').innerHTML;
+                ideaBtn.disabled = true;
+                ideaBtn.querySelector('span').textContent = content[currentLang].form_idea_loading;
+                
+                ideaContainer.innerHTML = '';
+
+                const prompt = currentLang === 'fr' 
+                    ? "Génère 3 exemples de messages courts et distincts qu'un client potentiel pourrait envoyer à une société de développement IA. Chaque message doit faire une seule phrase et être dans un format JSON comme suit: {\"ideas\": [\"message 1\", \"message 2\", \"message 3\"]}. Les messages doivent couvrir des besoins variés comme un chatbot, l'analyse de données, ou un modèle personnalisé."
+                    : "Generate 3 short, distinct examples of messages a potential client might send to an AI development company. Each message should be a single sentence and in a JSON format like this: {\"ideas\": [\"message 1\", \"message 2\", \"message 3\"]}. The messages should cover varied needs like a chatbot, data analysis, or a custom model.";
+
+                try {
+                    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                    const payload = { 
+                        contents: chatHistory,
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                        }
+                    };
+                    const apiKey = ""; // API key will be injected by the environment
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    const text = result.candidates[0].content.parts[0].text;
+                    const parsedJson = JSON.parse(text);
+                    const ideas = parsedJson.ideas;
+
+                    if (ideas && ideas.length > 0) {
+                        ideas.forEach(ideaText => {
+                            const suggestionEl = document.createElement('div');
+                            suggestionEl.className = 'idea-suggestion p-3 rounded-lg text-sm text-var(--text-light)';
+                            suggestionEl.textContent = ideaText;
+                            suggestionEl.onclick = () => {
+                                messageTextarea.value = ideaText;
+                                messageTextarea.focus();
+                            };
+                            ideaContainer.appendChild(suggestionEl);
+                        });
+                    } else {
+                         throw new Error("No ideas found in response.");
+                    }
+
+                } catch (error) {
+                    console.error("Error generating ideas:", error);
+                    ideaContainer.innerHTML = `<p class="text-sm text-red-400">${content[currentLang].form_idea_error}</p>`;
+                } finally {
+                    ideaBtn.disabled = false;
+                    ideaBtn.querySelector('span').innerHTML = originalButtonText;
+                }
+            });
+
+            // Set initial language
+            setSiteLanguage('fr');
+        });
+    </script>
+</body>
+</html>
